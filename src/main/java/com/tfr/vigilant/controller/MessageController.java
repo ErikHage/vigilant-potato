@@ -1,5 +1,7 @@
 package com.tfr.vigilant.controller;
 
+import com.tfr.vigilant.model.message.Message;
+import com.tfr.vigilant.model.message.MessageResponse;
 import com.tfr.vigilant.utils.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,9 +17,11 @@ public class MessageController {
             produces = Constants.APPLICATION_JSON,
             method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void createRecipe(@RequestBody String message) {
+    public MessageResponse createRecipe(@RequestBody Message message) {
         logger.debug("endpoint: /messages/enqueue");
 
         logger.debug("message: " + message);
+
+        return new MessageResponse("message received");
     }
 }
