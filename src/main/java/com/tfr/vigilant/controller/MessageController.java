@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -30,14 +31,29 @@ public class MessageController {
             produces = Constants.APPLICATION_JSON,
             method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public MessageResponse createRecipe(@RequestBody MessageRequest request) {
+    public ResponseEntity<MessageResponse> createRecipe(@RequestBody MessageRequest request) {
         logger.debug("endpoint: /messages/enqueue");
 
-        Message message = parseRequest(request);
+        try {
+            Message message = parseRequest(request);
+            messageQueue.add(message);
+        } catch (IllegalArgumentException ex) {
+            return errorResponse(HttpStatus.BAD_REQUEST, "Invalid message type provided");
+        } catch (Exception ex) {
+            return errorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected error: " + ex.getMessage());
+        }
 
-        messageQueue.add(message);
+        return successResponse();
+    }
 
-        return new MessageResponse("message received and queued");
+    private ResponseEntity<MessageResponse> successResponse() {
+        MessageResponse messageResponse = new MessageResponse("message received and queued");
+        return new ResponseEntity<>(messageResponse, HttpStatus.ACCEPTED);
+    }
+
+    private ResponseEntity<MessageResponse> errorResponse(HttpStatus status, String message) {
+        MessageResponse messageResponse = new MessageResponse(message);
+        return new ResponseEntity<>(messageResponse, status);
     }
 
     private Message parseRequest(MessageRequest messageRequest) {
