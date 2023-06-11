@@ -1,28 +1,19 @@
 package com.tfr.vigilant.model.message;
 
-public class Message {
+import java.time.LocalDateTime;
 
-    private String message;
-
-    public Message() {
-    }
-
-    public Message(String message) {
-        this.message = message;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
+public record Message(String messageId,
+                      MessageType messageType,
+                      String content,
+                      LocalDateTime receivedAt) implements Comparable<Message> {
 
     @Override
-    public String toString() {
-        return "Message{" +
-                "message='" + message + '\'' +
-                '}';
+    public int compareTo(Message other) {
+        if (receivedAt.isBefore(other.receivedAt)) {
+            return -1;
+        } else if (receivedAt.isAfter(other.receivedAt)) {
+            return 1;
+        }
+        return 0;
     }
 }
