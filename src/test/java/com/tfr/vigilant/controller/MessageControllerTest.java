@@ -39,7 +39,7 @@ public class MessageControllerTest {
 
     @Test
     public void testAcceptMessage_GivenValidMessage_Expect202() throws Exception {
-        String requestBody = "{\"type\":\"TEST\",\"content\":\"Some content here\"}";
+        String requestBody = "{\"type\":\"TEST_HP\",\"content\":\"Some content here\"}";
 
         doNothing().when(messageQueue).add(any(Message.class));
 
@@ -74,7 +74,7 @@ public class MessageControllerTest {
 
     @Test
     public void testAcceptMessage_GivenInternalServerError_Expect500() throws Exception {
-        String requestBody = "{\"type\":\"TEST\",\"content\":\"Some content here\"}";
+        String requestBody = "{\"type\":\"TEST_HP\",\"content\":\"Some content here\"}";
         RuntimeException expectedException = new RuntimeException("test message");
 
         doThrow(expectedException).when(messageQueue).add(any(Message.class));

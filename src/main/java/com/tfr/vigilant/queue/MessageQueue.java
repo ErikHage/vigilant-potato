@@ -43,4 +43,21 @@ public class MessageQueue {
         }
         return queue.poll();
     }
+
+    public int size() {
+        return queue.size() + priorityQueue.size();
+    }
+
+    public int lowPrioritySize() {
+        return queue.size();
+    }
+
+    public int highPrioritySize() {
+        return priorityQueue.size();
+    }
+
+    public void clear() {
+        queue.clear();
+        priorityQueue.clear();
+    }
 }

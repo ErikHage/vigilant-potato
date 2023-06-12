@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 public class VigilantPotatoApplicationTest {
 
     @Test
-    public void contextLoads() {
-
+    public void testApplicationContextLoads() {
+        VigilantPotatoApplication.main(new String[] {});
     }
 }
