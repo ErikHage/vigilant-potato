@@ -54,4 +54,40 @@ public class MessageControllerTest {
         verify(messageQueue, times(1)).add(any(Message.class));
         verifyNoMoreInteractions(messageQueue);
     }
+
+    @Test
+    public void testAcceptMessage_GivenInvalidType_Expect400() throws Exception {
+        String requestBody = "{\"type\":\"INVALID_TYPE\",\"content\":\"Some content here\"}";
+
+        doNothing().when(messageQueue).add(any(Message.class));
+
+        mockMvc.perform(post("/messages/enqueue")
+                        .contentType(Constants.APPLICATION_JSON)
+                        .content(requestBody))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(Constants.APPLICATION_JSON))
+                .andExpect(jsonPath("response", is("Invalid message type provided")));
+
+        verifyNoInteractions(messageQueue);
+    }
+
+    @Test
+    public void testAcceptMessage_GivenInternalServerError_Expect500() throws Exception {
+        String requestBody = "{\"type\":\"TEST\",\"content\":\"Some content here\"}";
+        RuntimeException expectedException = new RuntimeException("test message");
+
+        doThrow(expectedException).when(messageQueue).add(any(Message.class));
+
+        mockMvc.perform(post("/messages/enqueue")
+                        .contentType(Constants.APPLICATION_JSON)
+                        .content(requestBody))
+                .andDo(print())
+                .andExpect(status().isInternalServerError())
+                .andExpect(content().contentType(Constants.APPLICATION_JSON))
+                .andExpect(jsonPath("response", is("Unexpected error: test message")));
+
+        verify(messageQueue, times(1)).add(any(Message.class));
+        verifyNoMoreInteractions(messageQueue);
+    }
 }

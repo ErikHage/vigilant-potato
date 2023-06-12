@@ -14,6 +14,7 @@ public record Message(String messageId,
         } else if (receivedAt.isAfter(other.receivedAt)) {
             return 1;
         }
+
         return 0;
     }
 }
