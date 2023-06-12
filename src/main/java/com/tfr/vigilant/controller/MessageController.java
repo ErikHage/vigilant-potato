@@ -31,7 +31,7 @@ public class MessageController {
             produces = Constants.APPLICATION_JSON,
             method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ResponseEntity<MessageResponse> createRecipe(@RequestBody MessageRequest request) {
+    public ResponseEntity<MessageResponse> acceptMessage(@RequestBody MessageRequest request) {
         logger.debug("endpoint: /messages/enqueue");
 
         try {
