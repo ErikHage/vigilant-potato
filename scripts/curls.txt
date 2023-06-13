@@ -1,6 +1,6 @@
 curl -vX POST 127.0.0.1:8080/vigilant/messages/enqueue \
   -H 'content-type: application/json' \
   -d '{
-    "type":"TEST",
+    "type":"TEST_HP",
     "content":"test"
   }'
