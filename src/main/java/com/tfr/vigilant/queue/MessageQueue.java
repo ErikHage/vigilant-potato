@@ -5,7 +5,9 @@ import com.tfr.vigilant.model.message.Message;
 import com.tfr.vigilant.model.message.MessagePriority;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.PriorityBlockingQueue;
 
 @Component("MessageQueue")
@@ -15,10 +17,12 @@ public class MessageQueue {
 
     private final Queue<Message> queue;
     private final Queue<Message> priorityQueue;
+    private final Map<String, String> messageStatuses;
 
     private MessageQueue() {
         queue = new PriorityBlockingQueue<>();
         priorityQueue = new PriorityBlockingQueue<>();
+        messageStatuses = new ConcurrentHashMap<>();
     }
 
     public static MessageQueue getInstance() {
@@ -35,13 +39,27 @@ public class MessageQueue {
         } else {
             queue.add(message);
         }
+        messageStatuses.put(message.messageId(), "QUEUED");
     }
 
     public Message poll() {
+        Message message;
+
         if (!priorityQueue.isEmpty()) {
-            return priorityQueue.poll();
+             message = priorityQueue.poll();
+        } else {
+            message = queue.poll();
         }
-        return queue.poll();
+
+        if (message != null) {
+            messageStatuses.remove(message.messageId());
+        }
+
+        return message;
+    }
+
+    public String getMessageStatus(String messageId) {
+        return messageStatuses.get(messageId);
     }
 
     public int size() {
@@ -59,5 +77,6 @@ public class MessageQueue {
     public void clear() {
         queue.clear();
         priorityQueue.clear();
+        messageStatuses.clear();
     }
 }

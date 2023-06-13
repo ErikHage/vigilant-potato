@@ -7,8 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MessageQueueTest {
 
@@ -61,5 +60,21 @@ public class MessageQueueTest {
 
         assertEquals(m_hp, mq.poll());
         assertEquals(m_lp, mq.poll());
+    }
+
+    @Test
+    public void testGetMessageStatus_GivenMessagesInQueue_ExpectQueuedStatus() {
+        MessageQueue mq = MessageQueue.getInstance();
+
+        mq.add(m_lp);
+
+        assertEquals("QUEUED", mq.getMessageStatus(m_lp.messageId()));
+    }
+
+    @Test
+    public void testGetMessageStatus_GivenMessagesNotInQueue_ExpectNullStatus() {
+        MessageQueue mq = MessageQueue.getInstance();
+
+        assertNull(mq.getMessageStatus(m_lp.messageId()));
     }
 }

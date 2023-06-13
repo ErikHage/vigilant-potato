@@ -4,6 +4,7 @@ import com.tfr.vigilant.VigilantPotatoApplication;
 import com.tfr.vigilant.model.message.Message;
 import com.tfr.vigilant.queue.MessageQueue;
 import com.tfr.vigilant.utils.Constants;
+import com.tfr.vigilant.utils.UuidUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,15 +27,22 @@ public class MessageControllerTest {
     @MockBean
     @Qualifier("MessageQueue")
     private MessageQueue messageQueue;
+    @MockBean
+    @Qualifier("UuidUtils")
+    private UuidUtils uuidUtils;
 
     @Autowired
     private MessageController controller;
+
+    private final String testId = "some-test-id";
 
     private MockMvc mockMvc;
 
     @BeforeEach
     public void setUp() {
         mockMvc = standaloneSetup(controller).build();
+
+        when(uuidUtils.getUuid()).thenReturn(testId);
     }
 
     @Test
@@ -49,6 +57,7 @@ public class MessageControllerTest {
                 .andDo(print())
                 .andExpect(status().isAccepted())
                 .andExpect(content().contentType(Constants.APPLICATION_JSON))
+                .andExpect(jsonPath("messageId", is(testId)))
                 .andExpect(jsonPath("response", is("message received and queued")));
 
         verify(messageQueue, times(1)).add(any(Message.class));
@@ -67,6 +76,7 @@ public class MessageControllerTest {
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(Constants.APPLICATION_JSON))
+                .andExpect(jsonPath("messageId", is("NA")))
                 .andExpect(jsonPath("response", is("Invalid message type provided")));
 
         verifyNoInteractions(messageQueue);
@@ -85,6 +95,7 @@ public class MessageControllerTest {
                 .andDo(print())
                 .andExpect(status().isInternalServerError())
                 .andExpect(content().contentType(Constants.APPLICATION_JSON))
+                .andExpect(jsonPath("messageId", is("NA")))
                 .andExpect(jsonPath("response", is("Unexpected error: test message")));
 
         verify(messageQueue, times(1)).add(any(Message.class));

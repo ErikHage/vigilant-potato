@@ -6,6 +6,7 @@ import com.tfr.vigilant.model.message.MessageResponse;
 import com.tfr.vigilant.model.message.MessageType;
 import com.tfr.vigilant.queue.MessageQueue;
 import com.tfr.vigilant.utils.Constants;
+import com.tfr.vigilant.utils.UuidUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -21,9 +22,12 @@ public class MessageController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final MessageQueue messageQueue;
+    private final UuidUtils uuidUtils;
 
-    public MessageController(@Qualifier("MessageQueue") MessageQueue messageQueue) {
+    public MessageController(@Qualifier("MessageQueue") MessageQueue messageQueue,
+                             @Qualifier("UuidUtils") UuidUtils uuidUtils) {
         this.messageQueue = messageQueue;
+        this.uuidUtils = uuidUtils;
     }
 
     @RequestMapping(value = "/messages/enqueue",
@@ -37,22 +41,21 @@ public class MessageController {
         try {
             Message message = parseRequest(request);
             messageQueue.add(message);
+            return successResponse(message);
         } catch (IllegalArgumentException ex) {
             return errorResponse(HttpStatus.BAD_REQUEST, "Invalid message type provided");
         } catch (Exception ex) {
             return errorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected error: " + ex.getMessage());
         }
-
-        return successResponse();
     }
 
-    private ResponseEntity<MessageResponse> successResponse() {
-        MessageResponse messageResponse = new MessageResponse("message received and queued");
+    private ResponseEntity<MessageResponse> successResponse(Message message) {
+        MessageResponse messageResponse = new MessageResponse(message.messageId(), "message received and queued");
         return new ResponseEntity<>(messageResponse, HttpStatus.ACCEPTED);
     }
 
     private ResponseEntity<MessageResponse> errorResponse(HttpStatus status, String message) {
-        MessageResponse messageResponse = new MessageResponse(message);
+        MessageResponse messageResponse = new MessageResponse("NA", message);
         return new ResponseEntity<>(messageResponse, status);
     }
 
@@ -60,7 +63,7 @@ public class MessageController {
         MessageType messageType = MessageType.valueOf(messageRequest.getType());
         String content = messageRequest.getContent();
         LocalDateTime receivedAt = LocalDateTime.now();
-        String messageId = UUID.randomUUID().toString();
+        String messageId = uuidUtils.getUuid();
 
         Message message =  new Message(messageId, messageType, content, receivedAt);
 
