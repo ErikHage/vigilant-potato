@@ -36,7 +36,7 @@ public class MessageController {
             method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<MessageResponse> acceptMessage(@RequestBody MessageRequest request) {
-        logger.debug("endpoint: /messages/enqueue");
+        logger.debug("endpoint: /vigilant/messages/enqueue");
 
         try {
             Message message = parseRequest(request);

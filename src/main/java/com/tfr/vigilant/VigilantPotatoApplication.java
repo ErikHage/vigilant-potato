@@ -18,6 +18,5 @@ public class VigilantPotatoApplication {
             logger.error("Error encountered while running application", ex);
             throw new RuntimeException(ex);
         }
-
     }
 }

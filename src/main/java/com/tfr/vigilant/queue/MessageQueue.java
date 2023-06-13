@@ -10,27 +10,17 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.PriorityBlockingQueue;
 
-@Component("MessageQueue")
+@Component(value = "MessageQueue")
 public class MessageQueue {
-
-    private static MessageQueue INSTANCE;
 
     private final Queue<Message> queue;
     private final Queue<Message> priorityQueue;
     private final Map<String, String> messageStatuses;
 
-    private MessageQueue() {
+    public MessageQueue() {
         queue = new PriorityBlockingQueue<>();
         priorityQueue = new PriorityBlockingQueue<>();
         messageStatuses = new ConcurrentHashMap<>();
-    }
-
-    public static MessageQueue getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new MessageQueue();
-        }
-
-        return INSTANCE;
     }
 
     public void add(Message message) {
@@ -42,11 +32,15 @@ public class MessageQueue {
         messageStatuses.put(message.messageId(), "QUEUED");
     }
 
+    public boolean isEmpty() {
+        return priorityQueue.isEmpty() && queue.isEmpty();
+    }
+
     public Message poll() {
         Message message;
 
         if (!priorityQueue.isEmpty()) {
-             message = priorityQueue.poll();
+            message = priorityQueue.poll();
         } else {
             message = queue.poll();
         }

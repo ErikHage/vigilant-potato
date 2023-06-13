@@ -1,6 +1,7 @@
 package com.tfr.vigilant.controller;
 
 import com.tfr.vigilant.VigilantPotatoApplication;
+import com.tfr.vigilant.consumer.MessageConsumer;
 import com.tfr.vigilant.model.message.Message;
 import com.tfr.vigilant.queue.MessageQueue;
 import com.tfr.vigilant.utils.Constants;
@@ -27,6 +28,9 @@ public class MessageControllerTest {
     @MockBean
     @Qualifier("MessageQueue")
     private MessageQueue messageQueue;
+    @MockBean
+    @Qualifier("MessageConsumer")
+    private MessageConsumer messageConsumer;
     @MockBean
     @Qualifier("UuidUtils")
     private UuidUtils uuidUtils;
