@@ -52,6 +52,11 @@ public class MessageQueue {
         return message;
     }
 
+    /**
+     * Get the status fo the message with the given id
+     * @param messageId String
+     * @return String
+     */
     public String getMessageStatus(String messageId) {
         return messageStatuses.get(messageId);
     }
