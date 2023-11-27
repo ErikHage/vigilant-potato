@@ -61,6 +61,10 @@ public class MessageQueue {
         return messageStatuses.get(messageId);
     }
 
+    /**
+     * Get the current size of the message queue
+     * @return int
+     */
     public int size() {
         return queue.size() + priorityQueue.size();
     }
