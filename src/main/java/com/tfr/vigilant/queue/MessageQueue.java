@@ -85,6 +85,9 @@ public class MessageQueue {
         return priorityQueue.size();
     }
 
+    /**
+     * Clear the message queue
+     */
     public void clear() {
         queue.clear();
         priorityQueue.clear();
