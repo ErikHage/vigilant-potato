@@ -77,6 +77,10 @@ public class MessageQueue {
         return queue.size();
     }
 
+    /**
+     * Get the current size of the high priority message queue
+     * @return int
+     */
     public int highPrioritySize() {
         return priorityQueue.size();
     }
