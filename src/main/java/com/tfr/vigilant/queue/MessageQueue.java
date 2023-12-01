@@ -36,6 +36,13 @@ public class MessageQueue {
         return priorityQueue.isEmpty() && queue.isEmpty();
     }
 
+    /**
+     * Get the next item from the queue, checking the high priority queue first,
+     * then checking the normal priority queue. If no message is present,
+     * returns null.
+     *
+     * @return Message
+     */
     public Message poll() {
         Message message;
 
