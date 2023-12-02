@@ -32,6 +32,11 @@ public class MessageQueue {
         messageStatuses.put(message.messageId(), "QUEUED");
     }
 
+    /**
+     * Returns true if there are no messages in either the high or normal
+     * priority queues, otherwise returns false.
+     * @return boolean
+     */
     public boolean isEmpty() {
         return priorityQueue.isEmpty() && queue.isEmpty();
     }
