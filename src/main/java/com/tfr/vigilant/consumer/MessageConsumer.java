@@ -10,7 +10,7 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
 @Component("MessageConsumer")
-public class MessageConsumer implements ApplicationListener<ContextRefreshedEvent>, Runnable {
+public class MessageConsumer implements Runnable {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -30,27 +30,9 @@ public class MessageConsumer implements ApplicationListener<ContextRefreshedEven
 
     @Override
     public void run() {
-        while (true) {
-            if (messageQueue.isEmpty()) {
-                try {
-                    logger.debug("No messages to handle, sleeping 5 seconds");
-                    Thread.sleep(5000);
-                } catch (InterruptedException ex) {
-                    logger.error("Consumer thread interrupted", ex);
-                    throw new RuntimeException(ex);
-                }
-            } else {
-                consumeMessage();
-            }
+        while (!messageQueue.isEmpty()) {
+            consumeMessage();
         }
-    }
-
-    @Override
-    public void onApplicationEvent(ContextRefreshedEvent event) {
-        logger.info("Message Consumer Initializing");
-
-        new Thread(this).start();
-
-        logger.info("Message Consumer Initialized");
+        logger.info("Message queue drained, waiting for next consumer invocation");
     }
 }
