@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
  * throws an exception, it is caught and logged without being rethrown. The scheduler will execute
  * the command again as scheduled.
  */
-public class SturdyScheduler implements SafeExecutor {
+public class SturdyScheduler {
     private final String threadName;
     private final ScheduledExecutorService scheduledExecutorService;
 
@@ -69,22 +69,18 @@ public class SturdyScheduler implements SafeExecutor {
         }
     }
 
-    @Override
     public String getName() {
         return threadName;
     }
 
-    @Override
     public void shutdown() {
         scheduledExecutorService.shutdown();
     }
 
-    @Override
     public List<Runnable> shutdownNow() {
         return scheduledExecutorService.shutdownNow();
     }
 
-    @Override
     public boolean awaitTermination(long timeout, TimeUnit timeUnit) throws InterruptedException {
         return scheduledExecutorService.awaitTermination(timeout, timeUnit);
     }
