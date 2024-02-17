@@ -3,11 +3,13 @@ package com.tfr.vigilant.executor;
 import org.jmock.lib.concurrent.DeterministicScheduler;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class SturdySchedulerTest {
 
@@ -91,5 +93,27 @@ public class SturdySchedulerTest {
 
         deterministicScheduler.tick(50L, TimeUnit.MILLISECONDS);
         assertEquals(2, counter.get());
+    }
+
+    @Test
+    void shouldReturnName() {
+        assertEquals("sturdy-scheduler-unit-test", sturdyScheduler.getName());
+    }
+
+    @Test
+    void shouldInvokeShutdownOnTheWrappedScheduler() {
+        assertThrows(UnsupportedOperationException.class, sturdyScheduler::shutdown);
+    }
+
+    @Test
+    void shouldInvokeShutdownNowOnTheWrappedScheduler() {
+        assertThrows(UnsupportedOperationException.class, sturdyScheduler::shutdownNow);
+    }
+
+    @Test
+    void shouldInvokeAwaitTerminationOnTheWrappedScheduler() {
+        assertThrows(UnsupportedOperationException.class, () -> {
+            sturdyScheduler.awaitTermination(1L, TimeUnit.MILLISECONDS);
+        });
     }
 }
