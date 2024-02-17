@@ -7,11 +7,11 @@ import org.springframework.context.annotation.Configuration;
 import java.util.concurrent.Executors;
 
 @Configuration
-public class ScheduledExecutorService {
+public class ExecutorConfiguration {
 
     private final SturdyScheduler sturdyScheduler;
 
-    public ScheduledExecutorService() {
+    public ExecutorConfiguration() {
         this.sturdyScheduler = new SturdyScheduler(
                 "vigilant-scheduler",
                 Executors.newSingleThreadScheduledExecutor());
