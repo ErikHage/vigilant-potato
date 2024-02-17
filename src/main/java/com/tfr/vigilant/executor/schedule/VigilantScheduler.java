@@ -1,4 +1,4 @@
-package com.tfr.vigilant.executor.config;
+package com.tfr.vigilant.executor.schedule;
 
 import com.tfr.vigilant.consumer.MessageConsumer;
 import com.tfr.vigilant.executor.SturdyScheduler;
