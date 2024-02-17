@@ -30,6 +30,7 @@ public class MessageConsumer implements Runnable {
 
     @Override
     public void run() {
+        logger.info("Invoking message consumer, checking for messages...");
         while (!messageQueue.isEmpty()) {
             consumeMessage();
         }

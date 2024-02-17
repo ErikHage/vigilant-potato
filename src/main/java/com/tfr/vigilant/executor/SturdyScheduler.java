@@ -19,7 +19,7 @@ public class SturdyScheduler {
         this.scheduledExecutorService = scheduledExecutorService;
     }
 
-    ScheduledFuture<?> schedule(
+    public ScheduledFuture<?> schedule(
             Runnable command,
             long initialDelay,
             TimeUnit unit) {
@@ -30,7 +30,7 @@ public class SturdyScheduler {
         );
     }
 
-    ScheduledFuture<?> scheduleAtFixedRate(
+    public ScheduledFuture<?> scheduleAtFixedRate(
             Runnable command,
             long initialDelay,
             long period,
@@ -43,7 +43,7 @@ public class SturdyScheduler {
         );
     }
 
-    ScheduledFuture<?> scheduleWithFixedDelay(
+    public ScheduledFuture<?> scheduleWithFixedDelay(
             Runnable command,
             long initialDelay,
             long delay,
