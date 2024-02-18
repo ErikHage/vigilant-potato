@@ -8,8 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MessageQueueTest {
 
@@ -66,5 +65,16 @@ public class MessageQueueTest {
     @Test
     public void testGetMessageStatus_GivenMessagesNotInQueue_ExpectNullStatus() {
         assertNull(mq.getMessageStatus(m_lp.messageId()));
+    }
+
+    @Test
+    void testIsEmpty_GivenEmptyQueue_ReturnTrue() {
+        assertTrue(mq.isEmpty());
+    }
+
+    @Test
+    void testIsEmpty_GivenNonEmptyQueue_ReturnFalse() {
+        mq.add(m_lp);
+        assertFalse(mq.isEmpty());
     }
 }
