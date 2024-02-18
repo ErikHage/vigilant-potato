@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * A wrapper for ScheduledExecutorService that fixes the bear trap problem. If a scheduled command
@@ -13,6 +14,8 @@ import java.util.concurrent.TimeUnit;
 public class SturdyScheduler {
     private final String threadName;
     private final ScheduledExecutorService scheduledExecutorService;
+
+    public  final AtomicBoolean isRunning = new AtomicBoolean(false);
 
     public SturdyScheduler(String threadName, ScheduledExecutorService scheduledExecutorService) {
         this.threadName = threadName;

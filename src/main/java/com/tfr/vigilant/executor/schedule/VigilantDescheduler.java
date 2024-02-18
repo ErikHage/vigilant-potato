@@ -21,5 +21,7 @@ public class VigilantDescheduler implements ApplicationListener<ContextStoppedEv
     @Override
     public void onApplicationEvent(@NonNull ContextStoppedEvent event) {
         sturdyScheduler.shutdown();
+
+        sturdyScheduler.isRunning.set(false);
     }
 }

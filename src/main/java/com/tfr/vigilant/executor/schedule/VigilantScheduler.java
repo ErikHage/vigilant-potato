@@ -9,6 +9,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Component("VigilantScheduler")
 public class VigilantScheduler implements ApplicationListener<ContextRefreshedEvent> {
@@ -27,5 +28,7 @@ public class VigilantScheduler implements ApplicationListener<ContextRefreshedEv
     @Override
     public void onApplicationEvent(@NonNull ContextRefreshedEvent event) {
         sturdyScheduler.scheduleWithFixedDelay(messageConsumer, 5, 5, TimeUnit.SECONDS);
+
+        sturdyScheduler.isRunning.set(true);
     }
 }
