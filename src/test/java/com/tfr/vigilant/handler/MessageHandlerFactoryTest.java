@@ -34,7 +34,9 @@ class MessageHandlerFactoryTest {
     @Test
     void shouldReturnAppropriateHandlers() {
         when(messageHandlerMap.get(MessageType.TEST_HP)).thenReturn(new TestHighPriorityMessageHandler());
+        when(messageHandlerMap.get(MessageType.TEST_LP)).thenReturn(new TestLowPriorityMessageHandler());
 
         assertTrue(messageHandlerFactory.getHandler(MessageType.TEST_HP) instanceof TestHighPriorityMessageHandler);
+        assertTrue(messageHandlerFactory.getHandler(MessageType.TEST_LP) instanceof TestLowPriorityMessageHandler);
     }
 }
