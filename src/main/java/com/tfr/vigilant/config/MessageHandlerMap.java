@@ -1,5 +1,6 @@
 package com.tfr.vigilant.config;
 
+import com.tfr.vigilant.handler.LogMessageHandler;
 import com.tfr.vigilant.handler.MessageHandler;
 import com.tfr.vigilant.handler.TestHighPriorityMessageHandler;
 import com.tfr.vigilant.handler.TestLowPriorityMessageHandler;
@@ -14,5 +15,6 @@ public class MessageHandlerMap extends HashMap<MessageType, MessageHandler> {
     public MessageHandlerMap() {
         this.put(MessageType.TEST_HP, new TestHighPriorityMessageHandler());
         this.put(MessageType.TEST_LP, new TestLowPriorityMessageHandler());
+        this.put(MessageType.LOG, new LogMessageHandler());
     }
 }
