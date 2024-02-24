@@ -7,11 +7,11 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 
 public class LogMessageHandler implements MessageHandler {
-    private static final Logger logger = LoggerFactory.getLogger(LogMessageHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LogMessageHandler.class);
 
     @Override
     public Map<String, Object> handle(Message message) {
-        logger.info(message.content());
+        LOGGER.info(message.content());
 
         return Map.of("message", message.content());
     }
