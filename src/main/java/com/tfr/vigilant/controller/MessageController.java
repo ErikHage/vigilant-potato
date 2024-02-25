@@ -1,5 +1,6 @@
 package com.tfr.vigilant.controller;
 
+import com.tfr.vigilant.config.VigilantApiProperties;
 import com.tfr.vigilant.model.message.Message;
 import com.tfr.vigilant.model.message.MessageRequest;
 import com.tfr.vigilant.model.message.MessageResponse;
@@ -22,11 +23,14 @@ public class MessageController {
 
     private final MessageQueue messageQueue;
     private final UuidUtils uuidUtils;
+    private final VigilantApiProperties apiProperties;
 
     public MessageController(@Qualifier("MessageQueue") MessageQueue messageQueue,
-                             @Qualifier("UuidUtils") UuidUtils uuidUtils) {
+                             @Qualifier("UuidUtils") UuidUtils uuidUtils,
+                             @Qualifier("VigilantApiProperties") VigilantApiProperties apiProperties) {
         this.messageQueue = messageQueue;
         this.uuidUtils = uuidUtils;
+        this.apiProperties = apiProperties;
     }
 
     @RequestMapping(value = "/messages/enqueue",
@@ -38,6 +42,7 @@ public class MessageController {
         logger.debug("endpoint: /vigilant/messages/enqueue");
 
         try {
+            assertApiKey(request);
             Message message = parseRequest(request);
             messageQueue.add(message);
             return successResponse(message);
@@ -46,6 +51,11 @@ public class MessageController {
         } catch (Exception ex) {
             return errorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected error: " + ex.getMessage());
         }
+    }
+
+    private void assertApiKey(MessageRequest request) {
+        System.out.println("api key: " + apiProperties.getKey());
+        // TODO compare with key in request, 401 on mismatch
     }
 
     private ResponseEntity<MessageResponse> successResponse(Message message) {
