@@ -1,6 +1,7 @@
 package com.tfr.vigilant.controller;
 
 import com.tfr.vigilant.config.VigilantApiProperties;
+import com.tfr.vigilant.model.exception.UnauthorizedException;
 import com.tfr.vigilant.model.message.Message;
 import com.tfr.vigilant.model.message.MessageRequest;
 import com.tfr.vigilant.model.message.MessageResponse;
@@ -38,14 +39,19 @@ public class MessageController {
             produces = Constants.APPLICATION_JSON,
             method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ResponseEntity<MessageResponse> acceptMessage(@RequestBody MessageRequest request) {
+    public ResponseEntity<MessageResponse> acceptMessage(
+            @RequestHeader(value="vigilant-service") String vigilantService,
+            @RequestHeader(value="vigilant-key") String vigilantKey,
+            @RequestBody MessageRequest request) {
         logger.debug("endpoint: /vigilant/messages/enqueue");
 
         try {
-            assertApiKey(request);
+            assertApiKey(vigilantService, vigilantKey);
             Message message = parseRequest(request);
             messageQueue.add(message);
             return successResponse(message);
+        } catch (UnauthorizedException ex) {
+            return errorResponse(HttpStatus.UNAUTHORIZED, "Request Unauthorized");
         } catch (IllegalArgumentException ex) {
             return errorResponse(HttpStatus.BAD_REQUEST, "Invalid message type provided");
         } catch (Exception ex) {
@@ -53,9 +59,17 @@ public class MessageController {
         }
     }
 
-    private void assertApiKey(MessageRequest request) {
+    private void assertApiKey(String service, String key) throws UnauthorizedException {
         System.out.println("api key: " + apiProperties.getKey());
-        // TODO compare with key in request, 401 on mismatch
+        System.out.println("allowedServices: " + apiProperties.getAllowedServices());
+
+        if (service != null &&
+                apiProperties.getAllowedServices().contains(service) &&
+                apiProperties.getKey().equals(key)) {
+            return;
+        }
+
+        throw new UnauthorizedException();
     }
 
     private ResponseEntity<MessageResponse> successResponse(Message message) {
