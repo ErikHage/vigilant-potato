@@ -57,6 +57,8 @@ public class MessageControllerTest {
 
         mockMvc.perform(post("/messages/enqueue")
                 .contentType(Constants.APPLICATION_JSON)
+                .header("vigilant-service", "service1")
+                .header("vigilant-key", "replaceme")
                 .content(requestBody))
                 .andDo(print())
                 .andExpect(status().isAccepted())
@@ -75,8 +77,10 @@ public class MessageControllerTest {
         doNothing().when(messageQueue).add(any(Message.class));
 
         mockMvc.perform(post("/messages/enqueue")
-                        .contentType(Constants.APPLICATION_JSON)
-                        .content(requestBody))
+                .contentType(Constants.APPLICATION_JSON)
+                .header("vigilant-service", "service1")
+                .header("vigilant-key", "replaceme")
+                .content(requestBody))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(Constants.APPLICATION_JSON))
@@ -94,8 +98,10 @@ public class MessageControllerTest {
         doThrow(expectedException).when(messageQueue).add(any(Message.class));
 
         mockMvc.perform(post("/messages/enqueue")
-                        .contentType(Constants.APPLICATION_JSON)
-                        .content(requestBody))
+                .contentType(Constants.APPLICATION_JSON)
+                .header("vigilant-service", "service1")
+                .header("vigilant-key", "replaceme")
+                .content(requestBody))
                 .andDo(print())
                 .andExpect(status().isInternalServerError())
                 .andExpect(content().contentType(Constants.APPLICATION_JSON))
