@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @RestController
 public class MessageController {
@@ -40,8 +41,8 @@ public class MessageController {
             method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<MessageResponse> acceptMessage(
-            @RequestHeader(value="vigilant-service") String vigilantService,
-            @RequestHeader(value="vigilant-key") String vigilantKey,
+            @RequestHeader(value="vigilant-service") Optional<String> vigilantService,
+            @RequestHeader(value="vigilant-key") Optional<String> vigilantKey,
             @RequestBody MessageRequest request) {
         logger.debug("endpoint: /vigilant/messages/enqueue");
 
@@ -59,13 +60,14 @@ public class MessageController {
         }
     }
 
-    private void assertApiKey(String service, String key) throws UnauthorizedException {
+    private void assertApiKey(Optional<String> service, Optional<String> key) throws UnauthorizedException {
         System.out.println("api key: " + apiProperties.getKey());
         System.out.println("allowedServices: " + apiProperties.getAllowedServices());
 
-        if (service != null &&
-                apiProperties.getAllowedServices().contains(service) &&
-                apiProperties.getKey().equals(key)) {
+        if (service.isPresent() &&
+                key.isPresent() &&
+                apiProperties.getAllowedServices().contains(service.get()) &&
+                apiProperties.getKey().equals(key.get())) {
             return;
         }
 

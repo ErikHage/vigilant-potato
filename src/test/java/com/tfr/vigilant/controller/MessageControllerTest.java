@@ -111,4 +111,44 @@ public class MessageControllerTest {
         verify(messageQueue, times(1)).add(any(Message.class));
         verifyNoMoreInteractions(messageQueue);
     }
+
+    @Test
+    public void testAcceptMessage_GivenNoAuthKeyHeader_Expect401() throws Exception {
+        String requestBody = "{\"type\":\"TEST_HP\",\"content\":\"Some content here\"}";
+        RuntimeException expectedException = new RuntimeException("test message");
+
+        doThrow(expectedException).when(messageQueue).add(any(Message.class));
+
+        mockMvc.perform(post("/messages/enqueue")
+                        .contentType(Constants.APPLICATION_JSON)
+                        .header("vigilant-service", "service1")
+                        .content(requestBody))
+                .andDo(print())
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().contentType(Constants.APPLICATION_JSON))
+                .andExpect(jsonPath("messageId", is("NA")))
+                .andExpect(jsonPath("response", is("Request Unauthorized")));
+
+        verifyNoMoreInteractions(messageQueue);
+    }
+
+    @Test
+    public void testAcceptMessage_GivenNoAuthServiceHeader_Expect401() throws Exception {
+        String requestBody = "{\"type\":\"TEST_HP\",\"content\":\"Some content here\"}";
+        RuntimeException expectedException = new RuntimeException("test message");
+
+        doThrow(expectedException).when(messageQueue).add(any(Message.class));
+
+        mockMvc.perform(post("/messages/enqueue")
+                        .contentType(Constants.APPLICATION_JSON)
+                        .header("vigilant-key", "replaceme")
+                        .content(requestBody))
+                .andDo(print())
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().contentType(Constants.APPLICATION_JSON))
+                .andExpect(jsonPath("messageId", is("NA")))
+                .andExpect(jsonPath("response", is("Request Unauthorized")));
+
+        verifyNoMoreInteractions(messageQueue);
+    }
 }
