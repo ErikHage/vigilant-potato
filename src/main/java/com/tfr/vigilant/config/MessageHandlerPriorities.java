@@ -9,10 +9,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 
-@Component("MessageHandlerMap")
-public class MessageHandlerMap extends HashMap<MessageType, MessageHandler> {
+@Component("MessageHandlerPriorities")
+public class MessageHandlerPriorities extends HashMap<MessageType, MessageHandler> {
 
-    public MessageHandlerMap() {
+    public MessageHandlerPriorities() {
         this.put(MessageType.TEST_HP, new TestHighPriorityMessageHandler());
         this.put(MessageType.TEST_LP, new TestLowPriorityMessageHandler());
         this.put(MessageType.LOG, new LogMessageHandler());

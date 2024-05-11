@@ -1,6 +1,6 @@
 package com.tfr.vigilant.handler;
 
-import com.tfr.vigilant.config.MessageHandlerMap;
+import com.tfr.vigilant.config.MessageHandlerPriorities;
 import com.tfr.vigilant.model.message.MessageType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +14,7 @@ import static org.mockito.Mockito.when;
 class MessageHandlerFactoryTest {
 
     @Mock
-    private MessageHandlerMap messageHandlerMap;
+    private MessageHandlerPriorities messageHandlerPriorities;
 
     private MessageHandlerFactory messageHandlerFactory;
     private AutoCloseable ac;
@@ -23,7 +23,7 @@ class MessageHandlerFactoryTest {
     void setUp() {
         ac = MockitoAnnotations.openMocks(this);
 
-        messageHandlerFactory = new MessageHandlerFactory(messageHandlerMap);
+        messageHandlerFactory = new MessageHandlerFactory(messageHandlerPriorities);
     }
 
     @AfterEach
@@ -33,8 +33,8 @@ class MessageHandlerFactoryTest {
 
     @Test
     void shouldReturnAppropriateHandlers() {
-        when(messageHandlerMap.get(MessageType.TEST_HP)).thenReturn(new TestHighPriorityMessageHandler());
-        when(messageHandlerMap.get(MessageType.TEST_LP)).thenReturn(new TestLowPriorityMessageHandler());
+        when(messageHandlerPriorities.get(MessageType.TEST_HP)).thenReturn(new TestHighPriorityMessageHandler());
+        when(messageHandlerPriorities.get(MessageType.TEST_LP)).thenReturn(new TestLowPriorityMessageHandler());
 
         assertTrue(messageHandlerFactory.getHandler(MessageType.TEST_HP) instanceof TestHighPriorityMessageHandler);
         assertTrue(messageHandlerFactory.getHandler(MessageType.TEST_LP) instanceof TestLowPriorityMessageHandler);
